@@ -1,25 +1,55 @@
+import './App.css';
 import React from 'react';
 import axios from 'axios';
 
 function App() {
   const [data, setData] = React.useState([]);
 
-  const getUniversities = async () => {
-    try {
-        const res = await axios.get('http://universities.hipolabs.com/search?country=Australia');
-        setData(JSON.stringify(res.data));
-        console.log(res.data);
-    } catch (err) {
-        console.log(err);
-    }
-  }
-
   React.useEffect(() => {
-    getUniversities();
+    const fetchData = async () => {
+      const result = await axios(
+        'http://universities.hipolabs.com/search?country=Australia',
+      );
+
+      setData(result.data);
+    };
+
+    fetchData();
   }, [])
 
   return (
-        <p> {data} </p>
+    <div>
+      <table>
+        <tr>
+          <th>Domains</th>
+          <th>Web pages</th>
+          <th>State province</th>
+          <th>Name</th>
+          <th>Country</th>
+          <th>Country code</th>
+        </tr>
+        {data.map((val, key) => {
+          return (
+            <tr key={key}>
+              <td>{val.domains.map((d, k) => {
+                return (
+                  <div>{d}</div>
+                )
+              })}</td>
+              <td>{val.web_pages.map((w, k) => {
+                return (
+                  <div>{w}</div>
+                )
+              })}</td>
+              <td>{val.state_province}</td>
+              <td>{val.name}</td>
+              <td>{val.country}</td>
+              <td>{val.alpha_two_code}</td>
+            </tr>
+          )
+        })}
+      </table>
+    </div>
   );
 }
 
