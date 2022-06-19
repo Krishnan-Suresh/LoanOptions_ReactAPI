@@ -5,17 +5,22 @@ import axios from 'axios';
 function App() {
   const [data, setData] = React.useState([]);
 
-  React.useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios(
-        'http://universities.hipolabs.com/search?country=Australia',
-      );
+  const loadData = async () => {
+    const result = await axios('http://universities.hipolabs.com/search?country=Australia');
+    setData(result.data);
+  };
 
-      setData(result.data);
-    };
+  const addData = () => {
+    if (data.length) {
+      setData([...data, data[0]]);
+    }
+  };
 
-    fetchData();
-  }, [])
+  const deleteData = () => {
+    if (data.length) {
+      setData((data) => data.filter((_,i) => i !== data.length - 1));
+    }
+  };
 
   return (
     <div>
@@ -49,6 +54,9 @@ function App() {
           )
         })}
       </table>
+      <button onClick={loadData}>LOAD</button>
+      <button onClick={addData}>ADD</button>
+      <button onClick={deleteData}>DELETE</button>
     </div>
   );
 }
